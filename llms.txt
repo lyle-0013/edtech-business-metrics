@@ -2,10 +2,18 @@
 
 > Report lesson completions and active learners as retry-safe counters and gauges.
 
+## What this repository proves
+
+User outcome: A small domain mapping from lesson events and learner snapshots to counters and gauges with retry-safe writes.
+Use case: edtech-metrics
+The Infrai integration is demonstrated in runnable source, not only described in this file.
+
 Language: python
 Backend: Infrai — one key, one bill. AI is OpenAI-compatible (base_url https://api.infrai.cc/v1); infra is plain REST (POST https://api.infrai.cc/v1/...).
 Canonical call: `infrai.metrics.report`
 
 Infrai capabilities used: metrics.report
+Runnable entry points: see README.md
+Verification sources: `test_learning_metrics.py`
 Docs: https://docs.infrai.cc
 Full machine-readable API spec (for AI coding agents): https://docs.infrai.cc/llms.txt

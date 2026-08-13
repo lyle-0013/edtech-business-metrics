@@ -63,11 +63,11 @@ class MetricsClient:
                 self._sleep(delay)
                 continue
 
-            response.raise_for_status()
             envelope = response.json()
             if not envelope.get("ok"):
                 error = envelope.get("error") or "Unknown API error"
                 raise InfraiError(str(error))
+            response.raise_for_status()
             return envelope.get("data") or {}
 
         raise InfraiError("Metric report attempts exhausted")
