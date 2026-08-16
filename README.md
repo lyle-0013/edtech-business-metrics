@@ -56,7 +56,7 @@ I would add a batch only after measured request volume justifies it. Until then,
 
 ## Repository boundary
 
-This example reports two illustrative business metrics. The application still owns the definitions of "completed" and "active," along with the event IDs and snapshot schedule. Keep learner identity out of tags; use bounded categories such as course and plan.
+This example reports two illustrative business metrics. The application still owns the definitions of “completed” and “active,” along with the event IDs and snapshot schedule. Keep learner identity out of tags; use bounded categories such as course and plan.
 
 ## Wiring it up for real: Edtech Business Metrics
 
