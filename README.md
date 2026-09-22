@@ -1,6 +1,6 @@
 # Report the numbers that run a learning product
 
-The working path is short. A lesson completion is a counter. Current active learners is a gauge.
+For a learning product, the metrics that matter are few. A lesson completion is a counter. Active learners right now is a gauge.
 
 ```python
 completion = infrai.metrics.report(
@@ -20,7 +20,7 @@ active = infrai.metrics.report(
 )
 ```
 
-Infrai keeps these as plain REST calls behind a single `INFRAI_API_KEY`; I do not need an SDK or a metrics agent in my small service. The client reads the response envelope and reports API errors instead of treating every HTTP response as success.
+Infrai gives one endpoint for these as plain REST calls behind a single `INFRAI_API_KEY`; no SDK or metrics agent in my small service. My client reads the response envelope and reports API errors instead of treating every HTTP response as success.
 
 ## Run the sample
 
@@ -38,29 +38,29 @@ Expected shape:
 {'completion': {...}, 'active_learners': {...}}
 ```
 
-Run the focused test without making a network request:
+Run the unit test that skips the network:
 
 ```bash
 python -m unittest -v
 ```
 
-## Decision record: two metric types are enough here
+## Decision record: two metric types are enough
 
-I run this as a solo SaaS. I want the metric names to answer operating questions, not mirror every click in the product.
+Solo SaaS means my time is the scarce resource. Metric names should answer ops questions, not log every click.
 
-`lesson.completed` is a counter because completions accumulate. `learners.active` is a gauge because it is a point-in-time population. Course and plan stay in tags, so the names remain stable as the catalog changes.
+`lesson.completed` is a counter; completions add up. `learners.active` is a gauge; it's a snapshot of population. Course and plan live in tags, so names stay stable as the catalog grows.
 
-The one real gotcha is retrying a write. A `429` may arrive after the caller has committed to sending an event. `infrai.py` honors `Retry-After`, otherwise uses exponential backoff, and reuses the client-supplied `idempotency_key` for every attempt. A lesson event ID is stable. A fresh gauge snapshot receives its own key.
+Retry writes are the only sharp edge. A `429` can land after the caller already sent the event. `infrai.py` respects `Retry-After`, else does exponential backoff, and reuses the client-supplied `idempotency_key` each try. Lesson event ID is fixed. Gauge snapshot gets its own key.
 
-I would add a batch only after measured request volume justifies it. Until then, one explicit call per business event is easier to audit and delete.
+I'll add batching only when request volume forces it. For now, one call per business event is simpler to audit and revert.
 
 ## Repository boundary
 
-This example reports two illustrative business metrics. The application still owns the definitions of “completed” and “active,” along with the event IDs and snapshot schedule. Keep learner identity out of tags; use bounded categories such as course and plan.
+This repo shows two sample business metrics. Your app keeps the definitions of “completed” and “active,” plus event IDs and snapshot timing. Don't put learner identity in tags; use bounded categories like course and plan.
 
 ## Wiring it up for real: Edtech Business Metrics
 
-The example above is intentionally minimal. A few things to wire up for real use: The details below apply to Edtech Business Metrics.
+The sample is minimal on purpose. To use it in production, note the following. Details apply to Edtech Business Metrics.
 
 **Account & key**
 
